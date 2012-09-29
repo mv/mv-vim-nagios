@@ -1,0 +1,144 @@
+###
+### Nagios/Icinga Snippets
+###
+
+
+##############################################################################
+###
+### Commands
+###
+##############################################################################
+
+snippet cmd
+	define command {
+	  command_name  ${1}
+	  command_line  $ARG1$/
+	}
+
+snippet command
+	define command {
+	  command_name  ${1}
+	  command_line  $ARG1$/
+	}
+
+snippet host
+	define host {
+	  host_name              ${1}
+	  alias                  ${2:Host Name}
+	  address                ${3}
+	  use                    Generic-Host ; inherit definition
+	  parents                gw01
+	# check_command          check_host_alive
+	# max_check_attempts     3
+	# check_period           24x7
+	# contact_groups         admins
+	# notification_interval  120
+	# notification_period    24x7
+	# notification_options   d,u,r,f
+	# register               0   ; template flag
+	}
+
+snippet hostg
+	define hostgroup {
+	  hostgroup_name ${1}
+	  alias          ${2}
+	  members        ${3}
+}
+
+snippet hostd
+	define hostdependency {
+	  host_name
+	}
+
+snippet hoste
+	define hostescalation {
+	  host_name
+	}
+
+snippet hostx
+	define hostextinfo {
+	  host_name
+	}
+
+snippet service
+	define service {
+	  hostgroup_name        ${1}
+	# host_name             linux01   ; use 'hostgroup_name' OR 'host_name'
+	  service_description   PING
+	  check_command         check_ping!100.0,20%!500.0,60%
+	  normal_check_interval 5
+	  retry_check_interval  1
+	  max_check_attempts    5  ; 3 ?
+	  check_period          24x7
+	  notification_interval 120
+	  notification_period   24x7
+	  notification_options  w,u,c,r,f
+	  contact_groups        localadmins
+	}
+
+snippet serviceg
+	define servicegroup {
+	  service_name
+	  servicegroup_name all-ping
+	  alias             All Pings
+	  members           linux01,PING,linux02,PING
+	}
+
+snippet serviced
+	define servicedependency {
+	  service_name
+	}
+
+snippet timep
+	define timeperiod {
+	  timeperiod_name 24x7
+	  alias         24 Hours A Day, 7 Days A Week
+	  sunday        00:00-24:00
+	  monday        00:00-24:00
+	  tuesday       00:00-24:00
+	  wednesday     00:00-24:00
+	  thursday      00:00-24:00
+	  friday        00:00-24:00
+	  saturday      00:00-24:00
+    }
+
+snippet servicee
+	define serviceescalation {
+	  service_name
+	}
+
+snippet servicex
+	define serviceextinfo {
+	  service_name
+	}
+
+snippet contact
+	define contact {
+	  contact_name                  nagios
+	  alias                         Nagios Admin
+	  email                         nagios-admin@localhost
+	  host_notification_period      24x7
+	  service_notification_period   24x7
+	  service_notification_options  w,u,c,r
+	  host_notification_options     d,u,r
+	  service_notification_commands notify-by-email
+	  host_notification_commands    host-notify-by-email
+}
+
+snippet contactg
+	define contactgroup {
+	  contactgroup_name localadmins
+	  alias             Local Site Administrators
+	 #members           nagios
+	}
+
+snippet timeperiod
+	define timeperiod {
+	  name
+	}
+
+
+##############################################################################
+
+# vim:ft=snippet.nagios ts=2 sts=2 sw=2 noet nosta list foldlevel=9:
+
